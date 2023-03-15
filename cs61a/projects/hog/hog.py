@@ -131,12 +131,15 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
         if who == 0:
             score0 += take_turn(strategy0(score0, score1), score1, dice, goal)
             if more_boar(score0, score1):
+                say = say(score0, score1)
                 continue
         else:
             score1 += take_turn(strategy1(score1, score0), score0, dice, goal)
             if more_boar(score1, score0):
+                say = say(score0, score1)
                 continue
         who = next_player(who)
+        say = say(score0, score1)
 
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
