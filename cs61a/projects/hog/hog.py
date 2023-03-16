@@ -128,18 +128,17 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     while score0 < goal and score1 < goal:
+        is_more_boar = False
         if who == 0:
             score0 += take_turn(strategy0(score0, score1), score1, dice, goal)
-            if more_boar(score0, score1):
-                say = say(score0, score1)
-                continue
+            is_more_bar = more_boar(score0, score1)
         else:
             score1 += take_turn(strategy1(score1, score0), score0, dice, goal)
-            if more_boar(score1, score0):
-                say = say(score0, score1)
-                continue
-        who = next_player(who)
+            is_more_bar = more_boar(score1, score0)
+
         say = say(score0, score1)
+        if not is_more_bar:
+            who = next_player(who)
 
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
@@ -228,7 +227,15 @@ def announce_highest(who, last_score=0, running_high=0):
     """
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
-    "*** YOUR CODE HERE ***"
+    def say(score0, score1):
+        score = score0 if who == 0 else score1
+        diff = score - last_score
+        if diff > running_high:
+            print("Player {} has reached a new maximum point gain. {} point(s)!".format(who, diff))
+            return announce_highest(who, score, diff)
+        else:
+            return announce_highest(who, score, running_high)
+    return say
     # END PROBLEM 7
 
 
@@ -268,7 +275,14 @@ def make_averaged(original_function, trials_count=1000):
     3.0
     """
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    def averaged(*args):
+        i = 0
+        sum = 0
+        while i < trials_count:
+            sum += original_function(*args)
+            i += 1
+        return sum / trials_count
+    return averaged
     # END PROBLEM 8
 
 
@@ -282,7 +296,17 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     1
     """
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    max_scores = 0
+    max_scores_dice_num = 0
+    dice_num = 1
+    while dice_num <= 10:
+        averaged = make_averaged(roll_dice, trials_count)
+        average_score = averaged(dice_num, dice)
+        if average_score > max_scores:
+            max_scores = average_score
+            max_scores_dice_num = dice_num
+        dice_num += 1
+    return max_scores_dice_num
     # END PROBLEM 9
 
 
@@ -323,7 +347,7 @@ def piggypoints_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    return 0 if piggy_points(opponent_score) >= cutoff else num_rolls
     # END PROBLEM 10
 
 
@@ -333,7 +357,10 @@ def more_boar_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    if more_boar(score, opponent_score): 
+        return 0
+    else:
+        return piggypoints_strategy(score, opponent_score, cutoff, num_rolls)
     # END PROBLEM 11
 
 
