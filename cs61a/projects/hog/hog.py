@@ -357,7 +357,7 @@ def more_boar_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    if more_boar(score, opponent_score): 
+    if more_boar(score + piggy_points(opponent_score), opponent_score): 
         return 0
     else:
         return piggypoints_strategy(score, opponent_score, cutoff, num_rolls)
